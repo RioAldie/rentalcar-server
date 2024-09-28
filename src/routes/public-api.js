@@ -5,5 +5,6 @@ const publicRouter = new express.Router();
 
 publicRouter.get('/', carController.get);
 publicRouter.post('/car', carController.add);
+publicRouter.patch('/car', carController.edit);
 
 export { publicRouter };
