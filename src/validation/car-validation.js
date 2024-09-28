@@ -16,9 +16,9 @@ const createCarValidation = Joi.object({
 });
 const editCarValidation = Joi.object({
   id: Joi.string().required(),
-  name: Joi.string().max(100).required(),
-  image: Joi.string().max(100).required(),
-  location: Joi.string().max(50).required(),
+  name: Joi.string().max(100),
+  image: Joi.string().max(100),
+  location: Joi.string().max(50),
   brandId: Joi.string().max(100),
   categoryId: Joi.string().max(100),
   transmision: Joi.string().valid('AUTOMATIC', 'MANUAL').required(),
@@ -29,5 +29,10 @@ const editCarValidation = Joi.object({
   width: Joi.number(),
   height: Joi.number(),
 });
+const deleteCarValidation = Joi.string().max(100).required();
 
-export { createCarValidation, editCarValidation };
+export {
+  createCarValidation,
+  editCarValidation,
+  deleteCarValidation,
+};

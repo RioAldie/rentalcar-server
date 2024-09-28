@@ -32,4 +32,28 @@ const edit = async (req, res, next) => {
   }
 };
 
-export default { get, add, edit };
+const remove = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const result = await carService.remove(id);
+    res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    next(e);
+  }
+};
+
+const filterByBrand = async (req, res, next) => {
+  try {
+    const { brandId } = req.query;
+    const result = await carService.filterByBrand(brandId);
+    res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    next(e);
+  }
+};
+
+export default { get, add, edit, remove, filterByBrand };

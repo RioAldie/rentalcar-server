@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { validate } from '../validation/validate.js';
 import {
   createCarValidation,
+  deleteCarValidation,
   editCarValidation,
 } from '../validation/car-validation.js';
 
@@ -57,7 +58,7 @@ const edit = async (request) => {
   });
 
   if (!existingCar) {
-    throw new Error('Car not found'); // Handle case when car doesn't exist
+    throw new ResponseError(404, 'car is not found');
   }
 
   const updateCar = await prisma.car.update({
@@ -82,4 +83,36 @@ const edit = async (request) => {
 
   return updateCar;
 };
-export default { get, add, edit };
+
+const remove = async (id) => {
+  id = validate(deleteCarValidation, id);
+
+  const car = await prisma.car.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!car) {
+    throw new ResponseError(404, 'car is not found');
+  }
+
+  return car;
+};
+
+const filterByBrand = async (brand) => {
+  const cars = await prisma.car.findMany({
+    where: {
+      brandId: brand,
+    },
+    select: {
+      name: true,
+      location: true,
+      brand: true,
+      color: true,
+    },
+  });
+
+  return cars;
+};
+export default { get, add, edit, remove, filterByBrand };
