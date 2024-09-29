@@ -46,8 +46,7 @@ const remove = async (req, res, next) => {
 
 const filterByBrand = async (req, res, next) => {
   try {
-    const { brandId } = req.query;
-    const result = await carService.filterByBrand(brandId);
+    const result = await carService.filterByBrand(req);
     res.status(200).json({
       data: result,
     });

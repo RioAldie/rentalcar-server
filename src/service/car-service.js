@@ -100,11 +100,22 @@ const remove = async (id) => {
   return car;
 };
 
-const filterByBrand = async (brand) => {
+const filterByBrand = async (req) => {
+  const { brandId, categoryId } = req.query;
+
+  if (!brandId && !categoryId) {
+    throw new ResponseError(
+      400,
+      'At least one of brandId or categoryId is required'
+    );
+  }
+
+  const filter = {};
+  if (brandId) filter.brandId = brandId;
+  if (categoryId) filter.categoryId = categoryId;
+
   const cars = await prisma.car.findMany({
-    where: {
-      brandId: brand,
-    },
+    where: filter,
     select: {
       name: true,
       location: true,
