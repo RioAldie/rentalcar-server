@@ -13,5 +13,6 @@ publicRouter.post('/cars', carController.addMany);
 publicRouter.get('/car/:id', carController.getOne);
 
 publicRouter.post('/signup', userController.register);
+publicRouter.post('/signin', userController.login);
 
 export { publicRouter };
