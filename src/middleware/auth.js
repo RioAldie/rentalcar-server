@@ -15,11 +15,24 @@ export const tokenGenerated = (data) => {
 
 export const tokenVerified = (req, res, next) => {
   try {
-    const token = req.headers.authorization;
-    const verified = jwt.verify(token.split(' ')[1], SECRET_KEY);
-    if (verified) {
-      next();
+    const authHeader = req.get('Authorization');
+
+    if (!authHeader) {
+      return res.status(401).json({
+        errors: 'Unauthorized',
+      });
     }
+    const token = authHeader.split(' ')[1];
+
+    console.log('Authorization Header:', authHeader);
+    console.log('Token:', token);
+    jwt.verify(token, SECRET_KEY, (err, verified) => {
+      if (err) {
+        return res.status(401).json({ message: 'Token is invalid' });
+      }
+      // If token is verified, continue to the next middleware or route handler
+      next();
+    });
   } catch (error) {
     return res.status(401).json({ message: error.message });
   }

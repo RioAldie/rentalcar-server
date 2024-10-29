@@ -15,6 +15,15 @@ const register = async (request) => {
     request
   );
 
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  if (user) {
+    throw new ResponseError(402, 'email is already used');
+  }
+
   const pass = await bcrypt.hash(password, 10);
 
   const newUser = await prisma.user.create({
@@ -38,6 +47,9 @@ const login = async (request) => {
       email: data.email,
     },
   });
+  if (!user) {
+    throw new ResponseError(402, 'user with this email is not exist');
+  }
 
   const isPasswordValid = await bcrypt.compare(
     data.password,
