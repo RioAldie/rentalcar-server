@@ -10,4 +10,13 @@ const create = async (req, res, next) => {
   }
 };
 
-export default { create };
+const getAll = async (req, res, next) => {
+  try {
+    const result = await bookingService.getAll();
+    res.status(200).json({ data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { create, getAll };

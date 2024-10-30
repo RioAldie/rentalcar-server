@@ -22,5 +22,10 @@ publicRouter.post(
   [tokenVerified],
   bookingController.create
 );
+publicRouter.get(
+  '/booking',
+  [tokenVerified],
+  bookingController.getAll
+);
 
 export { publicRouter };

@@ -15,4 +15,29 @@ const createNewBookValidation = Joi.object({
   carId: Joi.string().max(100).required(),
 });
 
-export { createNewBookValidation };
+const editBookingValidation = Joi.object({
+  startDate: Joi.date().required(),
+  endDate: Joi.date().required(),
+  totalCost: Joi.string().max(100).required(),
+  status: Joi.string().valid(
+    'PENDING',
+    'CONFIRMED',
+    'CANCELLED',
+    'COMPLETED'
+  ),
+  payment: Joi.string().max(100),
+});
+const editStatusBookingValidation = Joi.object({
+  status: Joi.string().valid(
+    'PENDING',
+    'CONFIRMED',
+    'CANCELLED',
+    'COMPLETED'
+  ),
+});
+
+export {
+  createNewBookValidation,
+  editBookingValidation,
+  editStatusBookingValidation,
+};
