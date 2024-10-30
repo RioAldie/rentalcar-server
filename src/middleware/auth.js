@@ -24,8 +24,6 @@ export const tokenVerified = (req, res, next) => {
     }
     const token = authHeader.split(' ')[1];
 
-    console.log('Authorization Header:', authHeader);
-    console.log('Token:', token);
     jwt.verify(token, SECRET_KEY, (err, verified) => {
       if (err) {
         return res.status(401).json({ message: 'Token is invalid' });
