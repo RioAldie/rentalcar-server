@@ -16,18 +16,13 @@ const createNewBookValidation = Joi.object({
 });
 
 const editBookingValidation = Joi.object({
-  startDate: Joi.date().required(),
-  endDate: Joi.date().required(),
-  totalCost: Joi.string().max(100).required(),
-  status: Joi.string().valid(
-    'PENDING',
-    'CONFIRMED',
-    'CANCELLED',
-    'COMPLETED'
-  ),
-  payment: Joi.string().max(100),
+  id: Joi.string().required(),
+  startDate: Joi.date(),
+  endDate: Joi.date(),
+  totalCost: Joi.string().max(100),
 });
 const editStatusBookingValidation = Joi.object({
+  id: Joi.string().required(),
   status: Joi.string().valid(
     'PENDING',
     'CONFIRMED',

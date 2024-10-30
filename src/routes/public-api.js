@@ -27,5 +27,10 @@ publicRouter.get(
   [tokenVerified],
   bookingController.getAll
 );
+publicRouter.patch(
+  '/booking',
+  [tokenVerified],
+  bookingController.edit
+);
 
 export { publicRouter };
