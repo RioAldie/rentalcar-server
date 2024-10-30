@@ -7,14 +7,7 @@ export const web = express();
 
 web.use(express.json());
 
-web.use(publicRouter);
+web.use(publicRouter)
 web.use(userRouter);
 
 web.use(errorMiddleware)
-
-// web.listen(port, () => {
-//   console.log('server running at http://localhost:' + port);
-// });
-// web.use(publicRouter);
-// web.use(userRouter);
-// web.use(errorMiddleware);

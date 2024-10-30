@@ -1,4 +1,5 @@
 class ResponseError extends Error {
+  
 	constructor(status, message) {
 		super(message);
 		this.status = status;
@@ -8,3 +9,11 @@ class ResponseError extends Error {
 export {
 	ResponseError
 }
+
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+}
+
+export { ResponseError };

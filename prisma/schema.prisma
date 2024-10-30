@@ -12,3 +12,48 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Transmission {
+  AUTOMATIC
+  MANUAL
+}
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+model category {
+  id String @id @default(uuid())
+  name String
+  cars car[]
+}
+model brand {
+  id String @id @default(uuid())
+  name String
+  cars car[]
+}
+model car {
+  id String @id @default(uuid())
+  name String
+  image String
+  location String
+  brandId String
+  brand brand @relation(fields: [brandId], references: [id])
+  categoryId String
+  category category @relation(fields: [categoryId], references: [id])
+  transmision Transmission
+  speed String
+  seat Int
+  cost Decimal @default(0.00)
+  color String
+  width Int
+  height Int
+}
+model user {
+  id String @id @default(uuid())
+  username String
+  email String
+  token String
+  role Role[]
+  password String
+}
