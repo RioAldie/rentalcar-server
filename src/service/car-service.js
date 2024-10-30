@@ -5,6 +5,7 @@ import {
   deleteCarValidation,
   editCarValidation,
 } from '../validation/car-validation.js';
+import { ResponseError } from '../error/response-error.js';
 
 const prisma = new PrismaClient();
 const get = async () => {
@@ -13,38 +14,48 @@ const get = async () => {
   return cars;
 };
 
+const getOne = async (id) => {
+  const car = await prisma.car.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  if (!car) {
+    throw new ResponseError(404, 'car is not found');
+  }
+  return car;
+};
+
+const addMany = async (request) => {
+  const cars = request;
+
+  const result = await prisma.car.createMany({
+    data: cars,
+    skipDuplicates: true,
+  });
+
+  console.log(`${result.count} cars added successfully!`);
+  return result;
+};
+
 const add = async (request) => {
   const car = validate(createCarValidation, request);
 
-  const brandExists = await prisma.brand.findUnique({
-    where: { id: car.brandId },
-  });
-
-  const categoryExists = await prisma.category.findUnique({
-    where: { id: car.categoryId },
-  });
-
-  if (!brandExists || !categoryExists) {
-    throw new Error('Brand or Category does not exist.');
-  }
   const newcar = await prisma.car.create({
     data: {
       name: car.name,
       image: car.image,
       location: car.location,
-      brandId: car.brandId,
-      categoryId: car.categoryId,
+      brand: car.brand,
       transmision: car.transmision, // This is already validated by Joi
-      speed: car.speed,
       seat: car.seat,
-      cost: car.cost,
+      costPerDay: car.costPerDay,
       color: car.color,
-      width: car.width,
-      height: car.height,
+      model: car.model,
+      year: car.year,
     },
   });
 
-  console.log(car);
   return newcar;
 };
 
@@ -69,15 +80,14 @@ const edit = async (request) => {
       name: editCar.name || existingCar.name,
       image: editCar.image || existingCar.image,
       location: editCar.location || existingCar.location,
-      brandId: editCar.brandId || existingCar.brandId,
-      categoryId: editCar.categoryId || existingCar.categoryId,
+      brand: editCar.brandId || existingCar.brand,
       transmision: editCar.transmision || existingCar.transmision,
-      speed: editCar.speed || existingCar.speed,
       seat: editCar.seat || existingCar.seat,
-      cost: editCar.cost || existingCar.cost,
+      costPerDay: editCar.cost || existingCar.cost,
       color: editCar.color || existingCar.color,
-      width: editCar.width || existingCar.width,
-      height: editCar.height || existingCar.height,
+      model: editCar.model || existingCar.model,
+      year: editCar.year || existingCar.year,
+      available: editCar.available || existingCar.available,
     },
   });
 
@@ -96,8 +106,8 @@ const remove = async (id) => {
   if (!car) {
     throw new ResponseError(404, 'car is not found');
   }
-
-  return car;
+  const message = 'car deleted successfully!';
+  return message;
 };
 
 const filterByBrand = async (req) => {
@@ -126,4 +136,12 @@ const filterByBrand = async (req) => {
 
   return cars;
 };
-export default { get, add, edit, remove, filterByBrand };
+export default {
+  get,
+  add,
+  edit,
+  remove,
+  filterByBrand,
+  addMany,
+  getOne,
+};

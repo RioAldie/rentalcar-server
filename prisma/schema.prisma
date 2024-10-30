@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -17,43 +12,76 @@ enum Transmission {
   AUTOMATIC
   MANUAL
 }
-enum Role {
-  ADMIN
-  CUSTOMER
+
+
+model Car {
+  id          String   @id @default(uuid())
+  name        String
+  brand       String
+  model       String
+  year        Int
+  color       String
+  image       String   // URL or file path to the car image
+  transmision Transmission
+  seat        Int
+  costPerDay  Decimal  @default(0.00) // Daily rental cost
+  location    String
+  available   Boolean  @default(true) // Indicates if the car is available for rent
+  bookings    Booking[] // One-to-many relationship with bookings
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
-model category {
-  id String @id @default(uuid())
-  name String
-  cars car[]
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String   @unique
+  role      Role     @default(USER) // Enum for user roles (Admin/User)
+  bookings  Booking[] // One-to-many relationship with bookings
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-model brand {
-  id String @id @default(uuid())
-  name String
-  cars car[]
+
+enum Role {
+  ADMIN
+  USER
 }
-model car {
-  id String @id @default(uuid())
-  name String
-  image String
-  location String
-  brandId String
-  brand brand @relation(fields: [brandId], references: [id])
-  categoryId String
-  category category @relation(fields: [categoryId], references: [id])
-  transmision Transmission
-  speed String
-  seat Int
-  cost Decimal @default(0.00)
-  color String
-  width Int
-  height Int
+model Booking {
+  id          String   @id @default(uuid())
+  userId      String
+  carId       String
+  user        User   @relation(fields: [userId], references: [id])
+  car         Car   @relation(fields: [carId], references: [id])
+  startDate   DateTime // The start date of the rental
+  endDate     DateTime // The end date of the rental
+  totalCost   Decimal  @default(0.00)
+  status      BookingStatus @default(PENDING)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  payment Payment?
 }
-model user {
-  id String @id @default(uuid())
-  username String
-  email String
-  token String
-  role Role[]
-  password String
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Payment {
+  id          String   @id @default(uuid())
+  bookingId   String  @unique
+  amount      Decimal  @default(0.00)
+  paymentDate DateTime @default(now())
+  status      PaymentStatus @default(PENDING)
+  booking     Booking @relation(fields: [bookingId], references: [id])
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }
