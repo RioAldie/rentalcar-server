@@ -32,5 +32,10 @@ publicRouter.patch(
   [tokenVerified],
   bookingController.edit
 );
+publicRouter.patch(
+  '/booking/status',
+  [tokenVerified],
+  bookingController.update
+);
 
 export { publicRouter };

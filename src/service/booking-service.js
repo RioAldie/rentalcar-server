@@ -3,6 +3,7 @@ import { validate } from '../validation/validate.js';
 import {
   createNewBookValidation,
   editBookingValidation,
+  editStatusBookingValidation,
 } from '../validation/booking-validation.js';
 import { ResponseError } from '../error/response-error.js';
 
@@ -60,7 +61,7 @@ const edit = async (request) => {
 };
 
 const updateStatus = async (request) => {
-  const editBooking = validate(editBookingValidation, request);
+  const editBooking = validate(editStatusBookingValidation, request);
 
   const existingBooking = await prisma.booking.findUnique({
     where: {
