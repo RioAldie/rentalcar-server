@@ -41,4 +41,10 @@ publicRouter.patch(
 
 publicRouter.post('/payment', [tokenVerified], paymentController.add);
 
+publicRouter.post(
+  '/payment/status',
+  [tokenVerified],
+  paymentController.update
+);
+
 export { publicRouter };

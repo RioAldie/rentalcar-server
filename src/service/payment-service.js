@@ -1,6 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { ResponseError } from '../error/response-error.js';
-import { createPaymentValidation } from '../validation/payment-validation.js';
+import {
+  changeStatusPaymentValidation,
+  createPaymentValidation,
+} from '../validation/payment-validation.js';
 import { validate } from '../validation/validate.js';
 
 const prisma = new PrismaClient();
@@ -20,4 +23,29 @@ const add = async (request) => {
   return newpayment;
 };
 
-export default { add };
+const updateStatus = async (request) => {
+  const status = validate(changeStatusPaymentValidation, request);
+
+  const existingPayment = await prisma.payment.findUnique({
+    where: {
+      id: status.id,
+    },
+  });
+
+  if (!existingPayment) {
+    throw new ResponseError(404, 'Booking Not Found');
+  }
+
+  const updatePayment = await prisma.payment.update({
+    where: {
+      id: status.id,
+    },
+    data: {
+      status: status.status,
+    },
+  });
+
+  return updatePayment;
+};
+
+export default { add, updateStatus };
