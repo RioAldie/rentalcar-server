@@ -38,6 +38,16 @@ publicRouter.patch(
   [tokenVerified],
   bookingController.update
 );
+publicRouter.patch(
+  '/booking/cancel',
+  [tokenVerified],
+  bookingController.cancel
+);
+publicRouter.delete(
+  '/booking/:id',
+  [tokenVerified],
+  bookingController.remove
+);
 
 publicRouter.post('/payment', [tokenVerified], paymentController.add);
 

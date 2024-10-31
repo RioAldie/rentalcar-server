@@ -31,8 +31,16 @@ const editStatusBookingValidation = Joi.object({
   ),
 });
 
+const cancelBookingValidation = Joi.object({
+  id: Joi.string().required(),
+});
+
+const deleteBookingValidation = Joi.string().max(100).required();
+
 export {
   createNewBookValidation,
   editBookingValidation,
   editStatusBookingValidation,
+  cancelBookingValidation,
+  deleteBookingValidation,
 };

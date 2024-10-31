@@ -1,7 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { validate } from '../validation/validate.js';
 import {
+  cancelBookingValidation,
   createNewBookValidation,
+  deleteBookingValidation,
   editBookingValidation,
   editStatusBookingValidation,
 } from '../validation/booking-validation.js';
@@ -84,5 +86,52 @@ const updateStatus = async (request) => {
 
   return updateBooking;
 };
+const cancel = async (request) => {
+  const cancelBooking = validate(cancelBookingValidation, request);
 
-export default { getAll, createBooking, edit, updateStatus };
+  const existingBooking = await prisma.booking.findUnique({
+    where: {
+      id: cancelBooking.id,
+    },
+  });
+
+  if (!existingBooking) {
+    throw new ResponseError(404, 'Booking Not Found');
+  }
+
+  const updateBooking = await prisma.booking.update({
+    where: {
+      id: cancelBooking.id,
+    },
+    data: {
+      status: 'CANCELLED',
+    },
+  });
+
+  return updateBooking;
+};
+
+const remove = async (id) => {
+  id = validate(deleteBookingValidation, id);
+
+  const booking = await prisma.booking.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!booking) {
+    throw new ResponseError(404, 'booking is not found');
+  }
+  const message = 'booking deleted successfully!';
+  return message;
+};
+
+export default {
+  getAll,
+  createBooking,
+  edit,
+  updateStatus,
+  cancel,
+  remove,
+};
