@@ -59,18 +59,31 @@ const remove = async (req, res, next) => {
 
 const filterByBrand = async (req, res, next) => {
   try {
-    const result = await carService.filterByBrand(req);
+    const brand = req.params.brand;
+    const result = await carService.filterByBrand(brand);
     res.status(200).json({
       data: result,
     });
   } catch (error) {
-    next(error342);
+    next(error);
   }
 };
 
 const addMany = async (req, res, next) => {
   try {
     const result = await carService.addMany(req.body);
+
+    res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const search = async (req, res, next) => {
+  try {
+    const result = await carService.search(req);
 
     res.status(200).json({
       data: result,
@@ -87,4 +100,5 @@ export default {
   filterByBrand,
   addMany,
   getOne,
+  search,
 };

@@ -11,7 +11,8 @@ publicRouter.get('/', carController.get);
 publicRouter.post('/car', carController.add);
 publicRouter.patch('/car', carController.edit);
 publicRouter.delete('/car/:id', carController.remove);
-publicRouter.get('/cars', carController.filterByBrand);
+
+publicRouter.get('/cars/:brand', carController.search);
 publicRouter.post('/cars', carController.addMany);
 publicRouter.get('/car/:id', [tokenVerified], carController.getOne);
 
@@ -37,6 +38,16 @@ publicRouter.patch(
   '/booking/status',
   [tokenVerified],
   bookingController.update
+);
+publicRouter.patch(
+  '/booking/cancel',
+  [tokenVerified],
+  bookingController.cancel
+);
+publicRouter.delete(
+  '/booking/:id',
+  [tokenVerified],
+  bookingController.remove
 );
 
 publicRouter.post('/payment', [tokenVerified], paymentController.add);
