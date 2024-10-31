@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest -i",
     "dev": "nodemon src/main.js",
-    "vercel-build": "echo hello vercel"
+    "vercel-build": "echo hello vercel",
+    "postinstall": "prisma generate"
   },
   "jest": {
     "transform": {
