@@ -3,6 +3,7 @@ import carController from '../controllers/car-controller.js';
 import userController from '../controllers/user-controller.js';
 import { tokenVerified } from '../middleware/auth.js';
 import bookingController from '../controllers/booking-controller.js';
+import paymentController from '../controllers/payment-controller.js';
 
 const publicRouter = new express.Router();
 
@@ -36,6 +37,14 @@ publicRouter.patch(
   '/booking/status',
   [tokenVerified],
   bookingController.update
+);
+
+publicRouter.post('/payment', [tokenVerified], paymentController.add);
+
+publicRouter.post(
+  '/payment/status',
+  [tokenVerified],
+  paymentController.update
 );
 
 export { publicRouter };
