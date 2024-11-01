@@ -26,6 +26,7 @@ const createBooking = async (request) => {
       totalCost: booking_data.totalCost,
       status: booking_data.status,
       payment: booking_data.payment,
+      bank: booking_data.bank,
       carId: booking_data.carId,
     },
   });
