@@ -79,6 +79,8 @@ model Payment {
   paymentDate DateTime @default(now())
   status      PaymentStatus @default(PENDING)
   booking     Booking @relation(fields: [bookingId], references: [id])
+  transaction_proof String
+  bank String
 }
 
 enum PaymentStatus {

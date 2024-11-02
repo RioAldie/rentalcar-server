@@ -38,5 +38,26 @@ const update = async (req, res, next) => {
     next(error);
   }
 };
+const cancel = async (req, res, next) => {
+  try {
+    const result = await bookingService.cancel(req.body);
 
-export default { create, getAll, edit, update };
+    res.status(200).json({ data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const remove = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const result = await bookingService.remove(id);
+    res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { create, getAll, edit, update, cancel, remove };

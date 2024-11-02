@@ -10,7 +10,7 @@ import { ResponseError } from '../error/response-error.js';
 const prisma = new PrismaClient();
 const get = async () => {
   const cars = await prisma.car.findMany();
-
+  console.log(cars);
   return cars;
 };
 
@@ -110,30 +110,48 @@ const remove = async (id) => {
   return message;
 };
 
-const filterByBrand = async (req) => {
-  const { brandId, categoryId } = req.query;
-
-  if (!brandId && !categoryId) {
-    throw new ResponseError(
-      400,
-      'At least one of brandId or categoryId is required'
-    );
-  }
-
-  const filter = {};
-  if (brandId) filter.brandId = brandId;
-  if (categoryId) filter.categoryId = categoryId;
-
+const filterByBrand = async (brand) => {
   const cars = await prisma.car.findMany({
-    where: filter,
+    where: {
+      brand: brand,
+    },
     select: {
       name: true,
       location: true,
       brand: true,
       color: true,
+      image: true,
+      id: true,
     },
   });
 
+  return cars;
+};
+
+const search = async (request) => {
+  const { name, brand, model, year, priceRange } = request.query;
+  const cars = await prisma.car.findMany({
+    where: {
+      AND: [
+        name ? { name: { contains: name, mode: 'insensitive' } } : {},
+        brand
+          ? { brand: { contains: brand, mode: 'insensitive' } }
+          : {},
+        model
+          ? { model: { contains: model, mode: 'insensitive' } }
+          : {},
+        year ? { year: parseInt(year) } : {},
+        priceRange
+          ? {
+              costPerDay: {
+                gte: parseInt(priceRange.split('-')[0]),
+                lte: parseInt(priceRange.split('-')[1]),
+              },
+            }
+          : {},
+      ],
+    },
+  });
   return cars;
 };
 export default {
@@ -144,4 +162,5 @@ export default {
   filterByBrand,
   addMany,
   getOne,
+  search,
 };
