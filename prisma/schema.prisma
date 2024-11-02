@@ -62,7 +62,6 @@ model Booking {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   payment Payment?
-  bank    Bank?
 }
 
 enum BookingStatus {
@@ -91,10 +90,8 @@ enum PaymentStatus {
 
 model Bank {
   id          String   @id @default(uuid())
-  bookingId   String   @unique
-  name        String   
+  name        String
   accountNum  Int      @unique
-  accountName String   
-  image       String  
-  booking     Booking @relation(fields: [bookingId], references: [id])
+  accountName String
+  image       String
 }

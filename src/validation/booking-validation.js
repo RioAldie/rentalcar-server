@@ -12,7 +12,6 @@ const createNewBookValidation = Joi.object({
     'COMPLETED'
   ),
   payment: Joi.string().max(100),
-  Bank: Joi.string().max(100),
   carId: Joi.string().max(100).required(),
 });
 

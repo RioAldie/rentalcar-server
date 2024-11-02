@@ -4,6 +4,7 @@ import userController from '../controllers/user-controller.js';
 import { tokenVerified } from '../middleware/auth.js';
 import bookingController from '../controllers/booking-controller.js';
 import paymentController from '../controllers/payment-controller.js';
+import bankController from '../controllers/bank-controller.js';
 
 const publicRouter = new express.Router();
 
@@ -56,6 +57,30 @@ publicRouter.post(
   '/payment/status',
   [tokenVerified],
   paymentController.update
+);
+
+publicRouter.post(
+  '/bank',
+  [tokenVerified],
+  bankController.add
+);
+
+publicRouter.get(
+  '/booking',
+  [tokenVerified],
+  bookingController.getAll
+);
+
+publicRouter.patch(
+  '/bank',
+  [tokenVerified],
+  bankController.edit
+);
+
+publicRouter.delete(
+  '/bank/:id',
+  [tokenVerified],
+  bankController.remove
 );
 
 export { publicRouter };
