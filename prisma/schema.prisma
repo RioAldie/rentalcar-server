@@ -87,3 +87,11 @@ enum PaymentStatus {
   COMPLETED
   FAILED
 }
+
+model Bank {
+  id          String   @id @default(uuid())
+  name        String
+  accountNum  Int      @unique
+  accountName String
+  image       String
+}
