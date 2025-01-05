@@ -8,6 +8,15 @@ import bcrypt from 'bcrypt';
 import { ResponseError } from '../error/response-error.js';
 import { tokenGenerated } from '../middleware/auth.js';
 
+const get = async () => {
+  const users = await prisma.user.findUnique({
+    where: {
+      role: 'USER',
+    },
+  });
+
+  return users;
+};
 const prisma = new PrismaClient();
 const register = async (request) => {
   const { name, email, password, phone } = validate(
@@ -37,11 +46,39 @@ const register = async (request) => {
 
   return newUser;
 };
+const registerAdmin = async (request) => {
+  const { name, email, password, phone } = validate(
+    registerUserValidation,
+    request
+  );
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  if (user) {
+    throw new ResponseError(402, 'email is already used');
+  }
+
+  const pass = await bcrypt.hash(password, 10);
+
+  const newUser = await prisma.user.create({
+    data: {
+      name: name,
+      email: email,
+      password: pass,
+      phone: phone,
+      role: 'ADMIN',
+    },
+  });
+
+  return newUser;
+};
 
 const login = async (request) => {
   const data = validate(loginUserValidation, request);
 
-  console.log(data);
   const user = await prisma.user.findUnique({
     where: {
       email: data.email,
@@ -78,7 +115,52 @@ const login = async (request) => {
     token: tokenCreated,
   };
 };
+
+const loginAdmin = async (request) => {
+  const data = validate(loginUserValidation, request);
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: data.email,
+    },
+  });
+  if (!user) {
+    throw new ResponseError(402, 'user with this email is not exist');
+  }
+
+  const isPasswordValid = await bcrypt.compare(
+    data.password,
+    user.password
+  );
+
+  if (!isPasswordValid) {
+    throw new ResponseError(404, 'email or password is wrong!');
+  }
+  if (user.role !== 'ADMIN') {
+    throw new ResponseError(402, 'not admin!');
+  }
+  const token = {
+    id: user.id,
+    role: 'admin',
+    email: user.email,
+  };
+
+  const tokenCreated = tokenGenerated(token);
+
+  return {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+    },
+    token: tokenCreated,
+  };
+};
 export default {
   register,
   login,
+  get,
+  loginAdmin,
+  registerAdmin,
 };

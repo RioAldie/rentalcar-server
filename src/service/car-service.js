@@ -10,7 +10,7 @@ import { ResponseError } from '../error/response-error.js';
 const prisma = new PrismaClient();
 const get = async () => {
   const cars = await prisma.car.findMany();
-  console.log(cars);
+
   return cars;
 };
 

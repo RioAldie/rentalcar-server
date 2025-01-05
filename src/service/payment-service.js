@@ -8,6 +8,11 @@ import { validate } from '../validation/validate.js';
 
 const prisma = new PrismaClient();
 
+const get = async () => {
+  const payments = await prisma.payment.findMany();
+
+  return payments;
+};
 const add = async (request) => {
   const payment = validate(createPaymentValidation, request);
 
@@ -48,4 +53,4 @@ const updateStatus = async (request) => {
   return updatePayment;
 };
 
-export default { add, updateStatus };
+export default { add, updateStatus, get };

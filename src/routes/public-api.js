@@ -16,8 +16,11 @@ publicRouter.get('/cars/:brand', carController.search);
 publicRouter.post('/cars', carController.addMany);
 publicRouter.get('/car/:id', [tokenVerified], carController.getOne);
 
+publicRouter.get('/users', [tokenVerified], userController.get);
 publicRouter.post('/signup', userController.register);
 publicRouter.post('/signin', userController.login);
+publicRouter.post('/admin/signin', userController.loginAdmin);
+publicRouter.post('/admin/signup', userController.registerAdmin);
 
 publicRouter.post(
   '/booking',
@@ -49,7 +52,7 @@ publicRouter.delete(
   [tokenVerified],
   bookingController.remove
 );
-
+publicRouter.get('/payment', [paymentController.get]);
 publicRouter.post('/payment', [tokenVerified], paymentController.add);
 
 publicRouter.post(
