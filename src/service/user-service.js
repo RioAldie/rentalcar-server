@@ -9,9 +9,18 @@ import { ResponseError } from '../error/response-error.js';
 import { tokenGenerated } from '../middleware/auth.js';
 
 const get = async () => {
-  const users = await prisma.user.findUnique({
+  const users = await prisma.user.findMany({
     where: {
       role: 'USER',
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 
