@@ -12,7 +12,12 @@ import { ResponseError } from '../error/response-error.js';
 const prisma = new PrismaClient();
 
 const getAll = async () => {
-  const bookings = await prisma.booking.findMany();
+  const bookings = await prisma.booking.findMany({
+    include: {
+      user: true, // Include the related user data
+      car: true, // Include the related car data
+    },
+  });
 
   return bookings;
 };
